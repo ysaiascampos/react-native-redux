@@ -1,12 +1,10 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, FlatList } from 'react-native';
+import { connect } from 'react-redux';
 import ListItem from './components/ListItem';
-const data = [
-    { id: '1', desc: 'todo 1', completed: false},
-    { id: '2', desc: 'todo 2', completed: false},
-];
-export default () => {
+
+const App = ({ data, complete }) => {
     return (
         <View style={styles.container}>
             <FlatList 
@@ -14,7 +12,7 @@ export default () => {
                 data={data}
                 keyExtractor={x=> String(x.id)}
                 renderItem={({item}) => 
-                <ListItem onPress={() => {}} desc={item.desc} />
+                <ListItem onPress={() => complete(item.id)} desc={item.desc} />
             }
             />
             <StatusBar style="auto" />
@@ -34,4 +32,11 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch'
     }, 
 });
-  
+const mapStateToProps = state => {
+    return {data: state.todos}
+}
+
+const mapDispatchToProps = dispatch => ({
+    complete: (id) => dispatch(complete(id))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(App)
